@@ -206,3 +206,73 @@ if (track && cards.length) {
   track.addEventListener('touchstart', e => tx = e.touches[0].clientX, { passive: true });
   track.addEventListener('touchend', e => { const d = tx - e.changedTouches[0].clientX; if (Math.abs(d) > 40) { go(slide + (d > 0 ? 1 : -1)); stopAuto(); startAuto(); } }, { passive: true });
 }
+
+
+/* ---- Partners Mobile Carousel ---- */
+(function () {
+  const wrap  = document.getElementById('partnersCarouselWrap');
+  const track = document.getElementById('partnersTrack');
+  const grid  = document.getElementById('partnersGrid');
+  if (!wrap || !track || !grid) return;
+
+  // Build carousel from grid cards
+  function buildCarousel() {
+    const cards = Array.from(grid.querySelectorAll('.partner-card'));
+    if (!cards.length) return;
+
+    track.innerHTML = '';
+    // Duplicate twice for seamless infinite loop
+    [...cards, ...cards].forEach(card => {
+      const clone = card.cloneNode(true);
+      track.appendChild(clone);
+    });
+  }
+
+  buildCarousel();
+
+  // Pause on hover
+  wrap.addEventListener('mouseenter', () => wrap.classList.add('paused'));
+  wrap.addEventListener('mouseleave', () => wrap.classList.remove('paused'));
+
+  // Touch/swipe support
+  let touchStartX = 0;
+  let animPaused  = false;
+
+  wrap.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    wrap.classList.add('paused');
+    animPaused = true;
+  }, { passive: true });
+
+  wrap.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 30) {
+      // nudge animation direction on swipe (cosmetic snap feel)
+      const currentTransform = getComputedStyle(track).transform;
+      const mat = new DOMMatrix(currentTransform);
+      track.style.transform = `translateX(${mat.m41 - diff * 0.5}px)`;
+      setTimeout(() => {
+        track.style.transform = '';
+        wrap.classList.remove('paused');
+        animPaused = false;
+      }, 400);
+    } else {
+      wrap.classList.remove('paused');
+      animPaused = false;
+    }
+  }, { passive: true });
+
+  // Show/hide grid vs carousel based on viewport
+  function handleResize() {
+    if (window.innerWidth <= 768) {
+      grid.style.display  = 'none';
+      wrap.style.display  = 'block';
+    } else {
+      grid.style.display  = '';
+      wrap.style.display  = 'none';
+    }
+  }
+
+  handleResize();
+  window.addEventListener('resize', handleResize);
+})();
