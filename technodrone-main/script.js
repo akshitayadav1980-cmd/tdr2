@@ -208,74 +208,75 @@ if (track && cards.length) {
 }
 
 
-/* ---- Partners Mobile Carousel ---- */
+/* ---- Partners Infinite Slider — Touch Swipe Support ---- */
 (function () {
-  const wrap  = document.getElementById('partnersCarouselWrap');
-  const track = document.getElementById('partnersTrack');
-  const grid  = document.getElementById('partnersGrid');
-  if (!wrap || !track || !grid) return;
+  const slider = document.getElementById('partnersSlider');
+  const track  = document.getElementById('psliderTrack');
+  if (!slider || !track) return;
 
-  // Build carousel from grid cards
-  function buildCarousel() {
-    const cards = Array.from(grid.querySelectorAll('.partner-card'));
-    if (!cards.length) return;
-
-    track.innerHTML = '';
-    // Duplicate twice for seamless infinite loop
-    [...cards, ...cards].forEach(card => {
-      const clone = card.cloneNode(true);
-      track.appendChild(clone);
-    });
-  }
-
-  buildCarousel();
-
-  // Pause on hover
-  wrap.addEventListener('mouseenter', () => wrap.classList.add('paused'));
-  wrap.addEventListener('mouseleave', () => wrap.classList.remove('paused'));
-
-  // Touch/swipe support
   let touchStartX = 0;
-  let animPaused  = false;
+  let touchStartTime = 0;
+  let isDragging = false;
+  let dragOffset = 0;
+  let animOffset = 0; // current CSS translate X at drag start
 
-  wrap.addEventListener('touchstart', e => {
-    touchStartX = e.touches[0].clientX;
-    wrap.classList.add('paused');
-    animPaused = true;
-  }, { passive: true });
-
-  wrap.addEventListener('touchend', e => {
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 30) {
-      // nudge animation direction on swipe (cosmetic snap feel)
-      const currentTransform = getComputedStyle(track).transform;
-      const mat = new DOMMatrix(currentTransform);
-      track.style.transform = `translateX(${mat.m41 - diff * 0.5}px)`;
-      setTimeout(() => {
-        track.style.transform = '';
-        wrap.classList.remove('paused');
-        animPaused = false;
-      }, 400);
-    } else {
-      wrap.classList.remove('paused');
-      animPaused = false;
-    }
-  }, { passive: true });
-
-  // Show/hide grid vs carousel based on viewport
-  function handleResize() {
-    if (window.innerWidth <= 768) {
-      grid.style.display  = 'none';
-      wrap.style.display  = 'block';
-    } else {
-      grid.style.display  = '';
-      wrap.style.display  = 'none';
-    }
+  // Get computed translateX from running animation
+  function getLiveX() {
+    const style = window.getComputedStyle(track);
+    const mat   = new DOMMatrix(style.transform);
+    return mat.m41;
   }
 
-  handleResize();
-  window.addEventListener('resize', handleResize);
+  // Pause animation and lock position
+  function pauseAt(x) {
+    track.style.animationPlayState = 'paused';
+    track.style.transform = `translateX(${x}px)`;
+    track.style.animation = 'none';
+  }
+
+  // Resume animation seamlessly from current offset
+  function resumeFrom(x) {
+    // Calculate how far through the loop we are (0–1)
+    const trackW    = track.scrollWidth / 2; // half = one set
+    const progress  = ((-x) % trackW) / trackW;
+    const remaining = (1 - progress) * 32; // 32s total duration
+    track.style.animation = '';
+    track.style.transform = `translateX(${x}px)`;
+    // Re-apply animation with adjusted duration to avoid jump
+    track.style.animation = `pInfiniteScroll ${remaining}s linear 1 forwards`;
+    track.addEventListener('animationend', function onEnd() {
+      track.removeEventListener('animationend', onEnd);
+      track.style.animation = 'pInfiniteScroll 32s linear infinite';
+      track.style.transform = '';
+    }, { once: true });
+  }
+
+  // Touch events
+  slider.addEventListener('touchstart', e => {
+    touchStartX    = e.touches[0].clientX;
+    touchStartTime = Date.now();
+    animOffset     = getLiveX();
+    pauseAt(animOffset);
+    isDragging = true;
+  }, { passive: true });
+
+  slider.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    dragOffset = e.touches[0].clientX - touchStartX;
+    track.style.transform = `translateX(${animOffset + dragOffset}px)`;
+  }, { passive: true });
+
+  slider.addEventListener('touchend', e => {
+    if (!isDragging) return;
+    isDragging = false;
+    const elapsed = Date.now() - touchStartTime;
+    const velocity = dragOffset / elapsed; // px/ms
+    // Add momentum nudge
+    const finalX = animOffset + dragOffset + (velocity * 120);
+    resumeFrom(finalX);
+  }, { passive: true });
 })();
+
 
 
 /* ---- Blog Newsletter Subscription ---- */
