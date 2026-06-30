@@ -208,75 +208,72 @@ if (track && cards.length) {
 }
 
 
-/* ---- Partners Infinite Slider — Touch Swipe Support ---- */
+/* ---- Partners Slideshow ---- */
 (function () {
-  const slider = document.getElementById('partnersSlider');
-  const track  = document.getElementById('psliderTrack');
-  if (!slider || !track) return;
+  const slider   = document.getElementById('partnerSlider');
+  if (!slider) return;
 
-  let touchStartX = 0;
-  let touchStartTime = 0;
-  let isDragging = false;
-  let dragOffset = 0;
-  let animOffset = 0; // current CSS translate X at drag start
+  const track    = document.getElementById('pslideTrack');
+  const dotsWrap = document.getElementById('pslideDots');
+  const prevBtn  = document.getElementById('pslidePrev');
+  const nextBtn  = document.getElementById('pslideNext');
+  const items    = Array.from(track.querySelectorAll('.pslide-item'));
+  const total    = items.length;
+  if (!total) return;
 
-  // Get computed translateX from running animation
-  function getLiveX() {
-    const style = window.getComputedStyle(track);
-    const mat   = new DOMMatrix(style.transform);
-    return mat.m41;
+  let current   = 0;
+  let autoTimer = null;
+  const DELAY   = 3000;
+
+  /* Build dots */
+  items.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'pslide-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Go to partner ' + (i + 1));
+    dot.addEventListener('click', () => goTo(i, true));
+    dotsWrap.appendChild(dot);
+  });
+  const dots = Array.from(dotsWrap.querySelectorAll('.pslide-dot'));
+
+  /* Go to slide */
+  function goTo(index, resetTimer) {
+    current = ((index % total) + total) % total;
+    track.style.transform = 'translateX(-' + (current * 100) + '%)';
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    if (resetTimer) { stopAuto(); startAuto(); }
   }
 
-  // Pause animation and lock position
-  function pauseAt(x) {
-    track.style.animationPlayState = 'paused';
-    track.style.transform = `translateX(${x}px)`;
-    track.style.animation = 'none';
-  }
+  /* Autoplay */
+  function startAuto() { autoTimer = setInterval(() => goTo(current + 1, false), DELAY); }
+  function stopAuto()  { clearInterval(autoTimer); }
 
-  // Resume animation seamlessly from current offset
-  function resumeFrom(x) {
-    // Calculate how far through the loop we are (0–1)
-    const trackW    = track.scrollWidth / 2; // half = one set
-    const progress  = ((-x) % trackW) / trackW;
-    const remaining = (1 - progress) * 32; // 32s total duration
-    track.style.animation = '';
-    track.style.transform = `translateX(${x}px)`;
-    // Re-apply animation with adjusted duration to avoid jump
-    track.style.animation = `pInfiniteScroll ${remaining}s linear 1 forwards`;
-    track.addEventListener('animationend', function onEnd() {
-      track.removeEventListener('animationend', onEnd);
-      track.style.animation = 'pInfiniteScroll 32s linear infinite';
-      track.style.transform = '';
-    }, { once: true });
-  }
+  /* Controls */
+  prevBtn.addEventListener('click', () => goTo(current - 1, true));
+  nextBtn.addEventListener('click', () => goTo(current + 1, true));
 
-  // Touch events
-  slider.addEventListener('touchstart', e => {
-    touchStartX    = e.touches[0].clientX;
-    touchStartTime = Date.now();
-    animOffset     = getLiveX();
-    pauseAt(animOffset);
-    isDragging = true;
+  /* Pause on hover */
+  slider.addEventListener('mouseenter', stopAuto);
+  slider.addEventListener('mouseleave', startAuto);
+
+  /* Touch / swipe */
+  let touchX = 0;
+  track.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; stopAuto(); }, { passive: true });
+  track.addEventListener('touchend',   e => {
+    const diff = touchX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1), false);
+    startAuto();
   }, { passive: true });
 
-  slider.addEventListener('touchmove', e => {
-    if (!isDragging) return;
-    dragOffset = e.touches[0].clientX - touchStartX;
-    track.style.transform = `translateX(${animOffset + dragOffset}px)`;
-  }, { passive: true });
+  /* Keyboard */
+  slider.setAttribute('tabindex', '0');
+  slider.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  goTo(current - 1, true);
+    if (e.key === 'ArrowRight') goTo(current + 1, true);
+  });
 
-  slider.addEventListener('touchend', e => {
-    if (!isDragging) return;
-    isDragging = false;
-    const elapsed = Date.now() - touchStartTime;
-    const velocity = dragOffset / elapsed; // px/ms
-    // Add momentum nudge
-    const finalX = animOffset + dragOffset + (velocity * 120);
-    resumeFrom(finalX);
-  }, { passive: true });
+  goTo(0, false);
+  startAuto();
 })();
-
 
 
 /* ---- Blog Newsletter Subscription ---- */

@@ -828,62 +828,162 @@
   <section id="partners" class="partners-section rel-section">
     <img src="assets/logo.png" alt="" class="bg-watermark center-watermark wm-partners" aria-hidden="true" />
     <div class="wrap">
+
       <div class="section-head reveal">
         <div class="section-tag">OUR PARTNERS</div>
         <h2 class="section-h">Collaborating for <span class="hl">Innovation</span></h2>
         <p class="section-sub">We are proud to collaborate with leading universities, educational institutions, industries, government organizations, startups, and technology partners who share our vision of advancing drone technology, robotics, innovation, and research. Together, we build cutting-edge solutions, promote technical education, and drive technological excellence.</p>
       </div>
-    </div>
 
-    <!-- Full-width carousel (outside .wrap for edge-to-edge) -->
-    <div class="partners-slider" id="partnersSlider" aria-label="Partner logos carousel">
-      <!-- Fade edges -->
-      <div class="pslider-fade pslider-fade-l" aria-hidden="true"></div>
-      <div class="pslider-fade pslider-fade-r" aria-hidden="true"></div>
+      <!-- Slideshow -->
+      <div class="pslide-outer reveal" id="partnerSlider">
 
-      <!-- Track — duplicated for seamless loop -->
-      <div class="pslider-track" id="psliderTrack">
-        <!-- SET A -->
-        <div class="plogo-card"><img src="assets/partner_grp.jpeg"            alt="GRP"                                    loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_sirt_excellence.jpeg" alt="SIRT Excellence"                        loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_sage.jpeg"            alt="The SAGE Group"                         loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_sirt.jpeg"            alt="SIRT"                                   loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_manit.jpeg"           alt="MANIT Bhopal"                           loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_scope.jpeg"           alt="Scope Global Skills University"         loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_rntu.jpeg"            alt="Rabindranath Tagore University"         loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_sistec.jpeg"          alt="SISTec"                                 loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_nri.jpeg"             alt="NRI Group of Institutions"              loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_mpidc.jpeg"           alt="MPIDC"                                  loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_rd_school.jpeg"       alt="RD Public School"                       loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_svm1.jpeg"            alt="Saraswati Vidya Mandir"                 loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_nmims.jpeg"           alt="SVKM's NMIMS"                           loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_svm2.jpeg"            alt="Saraswati Vidya Mandir"                 loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_viralmind.jpeg"       alt="Viral Mind 360"                         loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_sems.jpeg"            alt="SEMS"                                   loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_startup_india.jpeg"   alt="Startup India"                          loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_ezego.jpeg"           alt="Ezego Mobility"                         loading="lazy" /></div>
-        <div class="plogo-card"><img src="assets/partner_fire.jpeg"            alt="FORE Institute of Drone Technology"     loading="lazy" /></div>
-        <!-- SET B (duplicate for seamless loop) -->
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_grp.jpeg"            alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_sirt_excellence.jpeg" alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_sage.jpeg"            alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_sirt.jpeg"            alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_manit.jpeg"           alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_scope.jpeg"           alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_rntu.jpeg"            alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_sistec.jpeg"          alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_nri.jpeg"             alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_mpidc.jpeg"           alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_rd_school.jpeg"       alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_svm1.jpeg"            alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_nmims.jpeg"           alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_svm2.jpeg"            alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_viralmind.jpeg"       alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_sems.jpeg"            alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_startup_india.jpeg"   alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_ezego.jpeg"           alt="" loading="lazy" /></div>
-        <div class="plogo-card" aria-hidden="true"><img src="assets/partner_fire.jpeg"            alt="" loading="lazy" /></div>
-      </div>
+        <!-- Viewport -->
+        <div class="pslide-viewport">
+          <div class="pslide-track" id="pslideTrack">
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_grp.jpeg" alt="GRP" />
+                <span class="pslide-name">GRP</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_sirt_excellence.jpeg" alt="Sagar Institute of Research &amp; Technology – Excellence" />
+                <span class="pslide-name">SIRT Excellence</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_sage.jpeg" alt="The SAGE Group" />
+                <span class="pslide-name">The SAGE Group</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_sirt.jpeg" alt="Sagar Institute of Research &amp; Technology" />
+                <span class="pslide-name">SIRT</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_manit.jpeg" alt="Maulana Azad National Institute of Technology" />
+                <span class="pslide-name">MANIT Bhopal</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_scope.jpeg" alt="Scope Global Skills University" />
+                <span class="pslide-name">Scope Global Skills University</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_rntu.jpeg" alt="Rabindranath Tagore University" />
+                <span class="pslide-name">RNTU</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_sistec.jpeg" alt="SISTec" />
+                <span class="pslide-name">SISTec</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_nri.jpeg" alt="NRI Group of Institutions" />
+                <span class="pslide-name">NRI Group</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_mpidc.jpeg" alt="MP Industrial Development Corporation Ltd." />
+                <span class="pslide-name">MPIDC</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_rd_school.jpeg" alt="RD Public School" />
+                <span class="pslide-name">RD Public School</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_svm1.jpeg" alt="Saraswati Vidya Mandir" />
+                <span class="pslide-name">Saraswati Vidya Mandir</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_nmims.jpeg" alt="SVKM's NMIMS" />
+                <span class="pslide-name">SVKM's NMIMS</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_viralmind.jpeg" alt="Viral Mind 360" />
+                <span class="pslide-name">Viral Mind 360</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_sems.jpeg" alt="SEMS" />
+                <span class="pslide-name">SEMS</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_startup_india.jpeg" alt="Startup India" />
+                <span class="pslide-name">Startup India</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_ezego.jpeg" alt="Ezego Mobility" />
+                <span class="pslide-name">Ezego Mobility</span>
+              </div>
+            </div>
+
+            <div class="pslide-item">
+              <div class="pslide-card">
+                <img src="assets/partner_fire.jpeg" alt="FIRE – FORE Institute of Drone Technology &amp; Research" />
+                <span class="pslide-name">FORE | FIDTR</span>
+              </div>
+            </div>
+
+          </div><!-- /.pslide-track -->
+        </div><!-- /.pslide-viewport -->
+
+        <!-- Arrow Controls -->
+        <button class="pslide-arrow pslide-prev" id="pslidePrev" aria-label="Previous partner">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="pslide-arrow pslide-next" id="pslideNext" aria-label="Next partner">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- Dots -->
+        <div class="pslide-dots" id="pslideDots"></div>
+
+      </div><!-- /.pslide-outer -->
+
     </div>
   </section>
 
