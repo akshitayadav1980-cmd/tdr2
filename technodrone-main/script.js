@@ -276,3 +276,29 @@ if (track && cards.length) {
   handleResize();
   window.addEventListener('resize', handleResize);
 })();
+
+
+/* ---- Blog Newsletter Subscription ---- */
+(function () {
+  const form    = document.getElementById('nlForm');
+  const input   = document.getElementById('nlEmail');
+  const success = document.getElementById('nlSuccess');
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const val = input.value.trim();
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRx.test(val)) {
+      input.style.borderColor = '#ff4d4d';
+      input.focus();
+      setTimeout(() => { input.style.borderColor = ''; }, 2000);
+      return;
+    }
+    // Show success
+    form.querySelector('.nl-input-wrap').style.opacity = '0.4';
+    form.querySelector('.nl-input-wrap').style.pointerEvents = 'none';
+    success.classList.add('show');
+    input.value = '';
+  });
+})();
