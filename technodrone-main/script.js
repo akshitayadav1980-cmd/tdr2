@@ -208,71 +208,73 @@ if (track && cards.length) {
 }
 
 
-/* ---- Partners Slideshow ---- */
+/* ---- Partners Mobile Carousel ---- */
 (function () {
-  const slider   = document.getElementById('partnerSlider');
-  if (!slider) return;
+  const wrap  = document.getElementById('partnersCarouselWrap');
+  const track = document.getElementById('partnersTrack');
+  const grid  = document.getElementById('partnersGrid');
+  if (!wrap || !track || !grid) return;
 
-  const track    = document.getElementById('pslideTrack');
-  const dotsWrap = document.getElementById('pslideDots');
-  const prevBtn  = document.getElementById('pslidePrev');
-  const nextBtn  = document.getElementById('pslideNext');
-  const items    = Array.from(track.querySelectorAll('.pslide-item'));
-  const total    = items.length;
-  if (!total) return;
+  // Build carousel from grid cards
+  function buildCarousel() {
+    const cards = Array.from(grid.querySelectorAll('.partner-card'));
+    if (!cards.length) return;
 
-  let current   = 0;
-  let autoTimer = null;
-  const DELAY   = 3000;
-
-  /* Build dots */
-  items.forEach((_, i) => {
-    const dot = document.createElement('button');
-    dot.className = 'pslide-dot' + (i === 0 ? ' active' : '');
-    dot.setAttribute('aria-label', 'Go to partner ' + (i + 1));
-    dot.addEventListener('click', () => goTo(i, true));
-    dotsWrap.appendChild(dot);
-  });
-  const dots = Array.from(dotsWrap.querySelectorAll('.pslide-dot'));
-
-  /* Go to slide */
-  function goTo(index, resetTimer) {
-    current = ((index % total) + total) % total;
-    track.style.transform = 'translateX(-' + (current * 100) + '%)';
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
-    if (resetTimer) { stopAuto(); startAuto(); }
+    track.innerHTML = '';
+    // Duplicate twice for seamless infinite loop
+    [...cards, ...cards].forEach(card => {
+      const clone = card.cloneNode(true);
+      track.appendChild(clone);
+    });
   }
 
-  /* Autoplay */
-  function startAuto() { autoTimer = setInterval(() => goTo(current + 1, false), DELAY); }
-  function stopAuto()  { clearInterval(autoTimer); }
+  buildCarousel();
 
-  /* Controls */
-  prevBtn.addEventListener('click', () => goTo(current - 1, true));
-  nextBtn.addEventListener('click', () => goTo(current + 1, true));
+  // Pause on hover
+  wrap.addEventListener('mouseenter', () => wrap.classList.add('paused'));
+  wrap.addEventListener('mouseleave', () => wrap.classList.remove('paused'));
 
-  /* Pause on hover */
-  slider.addEventListener('mouseenter', stopAuto);
-  slider.addEventListener('mouseleave', startAuto);
+  // Touch/swipe support
+  let touchStartX = 0;
+  let animPaused  = false;
 
-  /* Touch / swipe */
-  let touchX = 0;
-  track.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; stopAuto(); }, { passive: true });
-  track.addEventListener('touchend',   e => {
-    const diff = touchX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 40) goTo(current + (diff > 0 ? 1 : -1), false);
-    startAuto();
+  wrap.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    wrap.classList.add('paused');
+    animPaused = true;
   }, { passive: true });
 
-  /* Keyboard */
-  slider.setAttribute('tabindex', '0');
-  slider.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft')  goTo(current - 1, true);
-    if (e.key === 'ArrowRight') goTo(current + 1, true);
-  });
+  wrap.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 30) {
+      // nudge animation direction on swipe (cosmetic snap feel)
+      const currentTransform = getComputedStyle(track).transform;
+      const mat = new DOMMatrix(currentTransform);
+      track.style.transform = `translateX(${mat.m41 - diff * 0.5}px)`;
+      setTimeout(() => {
+        track.style.transform = '';
+        wrap.classList.remove('paused');
+        animPaused = false;
+      }, 400);
+    } else {
+      wrap.classList.remove('paused');
+      animPaused = false;
+    }
+  }, { passive: true });
 
-  goTo(0, false);
-  startAuto();
+  // Show/hide grid vs carousel based on viewport
+  function handleResize() {
+    if (window.innerWidth <= 768) {
+      grid.style.display  = 'none';
+      wrap.style.display  = 'block';
+    } else {
+      grid.style.display  = '';
+      wrap.style.display  = 'none';
+    }
+  }
+
+  handleResize();
+  window.addEventListener('resize', handleResize);
 })();
 
 
@@ -298,5 +300,41 @@ if (track && cards.length) {
     form.querySelector('.nl-input-wrap').style.pointerEvents = 'none';
     success.classList.add('show');
     input.value = '';
+  });
+})();
+
+
+/* ---- Partners Swiper Slideshow ---- */
+(function () {
+  if (typeof Swiper === 'undefined') return;
+
+  new Swiper('.partnersSwiper', {
+    loop: true,
+    speed: 800,
+    spaceBetween: 30,
+    slidesPerView: 1,
+    centeredSlides: true,
+    keyboard: { enabled: true },
+    grabCursor: true,
+    autoplay: {
+      delay: 2500,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true
+    },
+    navigation: {
+      nextEl: '.partners-next',
+      prevEl: '.partners-prev'
+    },
+    pagination: {
+      el: '.partners-pagination',
+      clickable: true,
+      dynamicBullets: true
+    },
+    breakpoints: {
+      480:  { slidesPerView: 2, spaceBetween: 20 },
+      768:  { slidesPerView: 3, spaceBetween: 24 },
+      1024: { slidesPerView: 4, spaceBetween: 28 },
+      1280: { slidesPerView: 5, spaceBetween: 30 }
+    }
   });
 })();
